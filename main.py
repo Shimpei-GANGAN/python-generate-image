@@ -2,14 +2,16 @@
 
 import argparse
 from datetime import datetime as dt
+from pathlib import Path
 from PIL import Image, ImageDraw, ImageFont
 
 
-def draw_text(date:str="2022年07月01 19:00 ～ 21:00") -> None:
+def draw_text(date:str="2022年07月01 19:00 ～ 21:00", name:str="test.png") -> None:
     """画像に日時を描画する
 
     Args:
         date (str): 描画日時. Defaults to "2022年07月01 19:00 ～ 21:00".
+        name (str): 画像名. Defaults to "test.png".
     """
     img = Image.new("RGB", (1024, 384), (256, 256, 256))
     draw = ImageDraw.Draw(img)
@@ -31,7 +33,8 @@ def draw_text(date:str="2022年07月01 19:00 ～ 21:00") -> None:
             font=ImageFont.truetype(font_type[0], 32))
 
     # 画像を保存する
-    img.save("./output/test.png")
+    Path("./output").mkdir(exist_ok=True)
+    img.save("./output/" + name)
 
 
 def convertDate(start:str, end:str) -> str:
@@ -51,7 +54,8 @@ def main():
     """ main function """
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("--img", help="Image for drawing", required=False)
+    parser.add_argument("--img-name", help="Image Name",
+                        default="example.png", type=str, required=False)
     parser.add_argument("--start", help="Start time.",
                         default="19:00", type=str, required=False)
     parser.add_argument("--end", help="Stop time.",
@@ -59,7 +63,7 @@ def main():
     args = parser.parse_args()
 
     print("date {0}".format(convertDate(args.start, args.end)))
-    draw_text(convertDate(args.start, args.end))
+    draw_text(convertDate(args.start, args.end), name=args.img_name)
 
 
 if __name__ == "__main__":
