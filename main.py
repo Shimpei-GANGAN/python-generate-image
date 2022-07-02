@@ -54,7 +54,7 @@ def main():
     parser.add_argument("--img", help="Image for drawing", required=False)
     parser.add_argument("--start", help="Start time.",
                         default="19:00", type=str, required=False)
-    parser.add_argument("--stop", help="Stop time.",
+    parser.add_argument("--end", help="Stop time.",
                         default="21:00", type=str, required=False)
     args = parser.parse_args()
 
