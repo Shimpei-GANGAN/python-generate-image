@@ -34,7 +34,7 @@ def draw_text(date:str="2022年07月01 19:00 ～ 21:00") -> None:
     img.save("./output/test.png")
 
 
-def convertDate(start:str, stop:str) -> str:
+def convertDate(start:str, end:str) -> str:
     """YYYY年mm月dd日 HH:MM ～ HH:MMという文字列を返す
 
     Args:
@@ -44,7 +44,7 @@ def convertDate(start:str, stop:str) -> str:
     Returns:
         str: YYYY年mm月dd日 HH:MM ～ HH:MM
     """
-    return "{0} {1} ～ {2}".format(dt.today().strftime("%Y年%m月%d日"), start, stop)
+    return "{0} {1} ～ {2}".format(dt.today().strftime("%Y年%m月%d日"), start, end)
 
 
 def main():
@@ -58,7 +58,8 @@ def main():
                         default="21:00", type=str, required=False)
     args = parser.parse_args()
 
-    print(convertDate(args.start, args.stop))
+    print("date {0}".format(convertDate(args.start, args.end)))
+    draw_text(convertDate(args.start, args.end))
 
 
 if __name__ == "__main__":
