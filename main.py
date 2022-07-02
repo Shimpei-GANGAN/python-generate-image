@@ -52,8 +52,6 @@ def main():
 
     parser = argparse.ArgumentParser()
     parser.add_argument("--img", help="Image for drawing", required=False)
-    parser.add_argument("--date", help="Image drawing text.",
-                        default="2022/07/01", required=False)
     parser.add_argument("--start", help="Start time.",
                         default="19:00", type=str, required=False)
     parser.add_argument("--stop", help="Stop time.",
