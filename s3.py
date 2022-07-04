@@ -2,15 +2,31 @@
 
 import boto3
 from boto3.session import Session
+from typing import Any
 
-def upload_s3() -> None:
-    pass
+def upload_s3(
+    client: Any,
+    bucketName: str = "testBucket",
+    bucketDir: str = "/tttttt",
+    fileName: str = "test.txt"
+) -> None:
+    """S3にファイルをアップロードする
+
+    Args:
+        client (Any): 一時クレデンシャル発行済みclient
+        bucketName (str): アップロードするS3のバケット名. Defaults to "testBucket".
+        bucketDir (str): アップロードするS3のフォルダ名. Defaults to "/tttttt".
+        fileName (str): アップロードするファイル名. Defaults to "test.txt".
+    """
+    s3 = client.resource("s3")
+    bucket = s3.Bucket(bucketName)
+    bucket.upload_file(fileName, bucketDir + "/" + fileName)
 
 
-def assume_role(
+def get_assume_role(
     roleArn: str = "arn:aws:iam:: XXXXX:role/role_name",
     roleSessionName: str = "test"
-) -> None:
+) -> Any:
     """AssumeRoleを取得する
 
     Args:
@@ -39,3 +55,5 @@ def assume_role(
     client = session.client("sts")
     account_id = client.get_caller_identity()["Account"]
     print("Account ID: {0}".format(account_id))
+
+    return client
