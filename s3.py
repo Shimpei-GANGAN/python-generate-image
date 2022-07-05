@@ -2,7 +2,8 @@
 
 import boto3
 from boto3.session import Session
-from typing import Any
+from pathlib import Path
+
 
 def upload_s3(
     session: boto3.Session,
@@ -13,14 +14,20 @@ def upload_s3(
     """S3にファイルをアップロードする
 
     Args:
-        session (boto3.Session): AssumeROle取得済みSession情報.
-        bucketName (str): アップロードするS3のバケット名. Defaults to "testBucket".
-        bucketDir (str): アップロードするS3のフォルダ名. Defaults to "/tttttt".
-        fileName (str): アップロードするファイル名. Defaults to "test.txt".
+        session (boto3.Session):
+            Assume Role で取得した Session 情報.
+        bucketName (str):
+            アップロードする S3 のバケット名. Defaults to "testBucket".
+        bucketDir (str):
+            アップロードする S3 のフォルダ名. dirName/ のように / は後ろに配置する. Defaults to "/tttttt".
+        fileName (str):
+            アップロードするファイル名. /dir/filename の形式で渡すことが可能である. Defaults to "test.txt".
     """
     s3 = session.resource("s3")
     bucket = s3.Bucket(bucketName)
-    bucket.upload_file(fileName, bucketDir + "/" + fileName)
+
+    # NOTE: upload_file(対象ファイルのパス, S3のアップロード先) のため, fileNameからbasenameのみを抽出する
+    bucket.upload_file(fileName, bucketDir + Path(fileName).name)
 
 
 def get_assume_role(
@@ -51,7 +58,7 @@ def get_assume_role(
         aws_access_key_id=response["Credentials"]["AccessKeyId"],
         aws_secret_access_key=response["Credentials"]["SecretAccessKey"],
         aws_session_token=response["Credentials"]["SessionToken"],
-        region_namee="ap-northeast-1"
+        region_name="ap-northeast-1"
     )
     
     # テスト
@@ -60,3 +67,15 @@ def get_assume_role(
     print("Account ID: {0}".format(account_id))
 
     return session
+
+
+if __name__ == "__main__":
+    session = get_assume_role(
+        roleArn="ttttt",
+        roleSessionName="ttttt"
+    )
+
+    upload_s3(
+        session=session,
+        fileName="./output/example.png"
+    )
