@@ -6,11 +6,11 @@ from pathlib import Path
 from PIL import Image, ImageDraw, ImageFont
 
 
-def draw_text(date:str="2022年07月01 19:00 ～ 21:00", name:str="test.png") -> None:
+def draw_text(date:str="2022年07月01日 19:00 ～ 21:00", name:str="test.png") -> None:
     """画像に日時を描画する
 
     Args:
-        date (str): 描画日時. Defaults to "2022年07月01 19:00 ～ 21:00".
+        date (str): 描画日時. Defaults to "2022年07月01日 19:00 ～ 21:00".
         name (str): 画像名. Defaults to "test.png".
     """
     img = Image.new("RGB", (1024, 384), (256, 256, 256))
