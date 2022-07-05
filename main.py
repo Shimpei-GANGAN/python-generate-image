@@ -62,8 +62,8 @@ def main():
                         default="21:00", type=str, required=False)
     args = parser.parse_args()
 
-    print("date {0}".format(convertDate(args.start, args.end)))
-    draw_text(convertDate(args.start, args.end), name=args.img_name)
+    print("date {0}".format(convert_date(args.start, args.end)))
+    draw_text(convert_date(args.start, args.end), name=args.img_name)
 
 
 if __name__ == "__main__":
