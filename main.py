@@ -37,15 +37,15 @@ def draw_text(date:str="2022年07月01日 19:00 ～ 21:00", name:str="test.png")
     img.save("./output/" + name)
 
 
-def convertDate(start:str, end:str) -> str:
+def convert_date(start:str, end:str) -> str:
     """YYYY年mm月dd日 HH:MM ～ HH:MMという文字列を返す
 
     Args:
         start (str): 開始時刻. HH:MM形式で渡す
-        stop (str): 終了時刻. HH:MM形式で渡す
+        end (str): 終了時刻. HH:MM形式で渡す
 
     Returns:
-        str: YYYY年mm月dd日 HH:MM ～ HH:MM
+        convert date (str): YYYY年mm月dd日 HH:MM ～ HH:MM
     """
     return "{0} {1} ～ {2}".format(dt.today().strftime("%Y年%m月%d日"), start, end)
 
