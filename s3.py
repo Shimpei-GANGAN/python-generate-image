@@ -1,81 +1,83 @@
-# -*- coding: utf-8 -*-
-
 import boto3
 from boto3.session import Session
 from pathlib import Path
 
 
-def upload_s3(
-    session: boto3.Session,
-    bucketName: str = "testBucket",
-    bucketDir: str = "/tttttt",
-    fileName: str = "test.txt"
-) -> None:
-    """S3にファイルをアップロードする
-
-    Args:
-        session (boto3.Session):
-            Assume Role で取得した Session 情報.
-        bucketName (str):
-            アップロードする S3 のバケット名. Defaults to "testBucket".
-        bucketDir (str):
-            アップロードする S3 のフォルダ名. dirName/ のように / は後ろに配置する. Defaults to "/tttttt".
-        fileName (str):
-            アップロードするファイル名. /dir/filename の形式で渡すことが可能である. Defaults to "test.txt".
-    """
-    s3 = session.resource("s3")
-    bucket = s3.Bucket(bucketName)
-
-    # NOTE: upload_file(対象ファイルのパス, S3のアップロード先) のため, fileNameからbasenameのみを抽出する
-    bucket.upload_file(fileName, bucketDir + Path(fileName).name)
-
-
-def get_assume_role(
-    roleArn: str = "arn:aws:iam:: XXXXX:role/role_name",
-    roleSessionName: str = "test"
-) -> boto3.Session:
-    """AssumeRoleを取得する
-
-    Args:
-        roleArn (str): Role Arn. Defaults to "arn:aws:iam:: XXXXX:role/role_name".
-        roleSessionName (str): Role Session Name. Defaults to "test".
-    Returns:
-        AssumeRole Session.
-    """
-    client = boto3.client("sts")
-
-    # NOTE: aws sts assume-role --role-arn roleArn --role-session-name roleSessionName
-    response = client.assume_role(
-        RoleArn = roleArn,
-        RoleSessionName = roleSessionName
-    )
-
-    # NOTE: 以下の設定と同義.
-    # export AWS_ACCESS_KEY_ID="XXXXX"
-    # export AWS_SECRET_ACCESS_KEY="XXXXX"
-    # export AWS_SESSION_TOKEN="XXXXX"
-    session = Session(
-        aws_access_key_id=response["Credentials"]["AccessKeyId"],
-        aws_secret_access_key=response["Credentials"]["SecretAccessKey"],
-        aws_session_token=response["Credentials"]["SessionToken"],
-        region_name="ap-northeast-1"
-    )
+class S3:
+    """AWS S3 に関する処理を行うクラス.
     
-    # テスト
-    client = session.client("sts")
-    account_id = client.get_caller_identity()["Account"]
-    print("Account ID: {0}".format(account_id))
+    Attributes:
+        TODO: 書き方を確認してコメント書く
+    """
+    
+    def __init__(
+        self,
+        aws_role_arn: str = "arn:aws:iam::XXXXX:role/role_name",
+        aws_role_session_name: str = "test",
+        aws_region_name: str = "ap-northeast-1"
+    ) -> None:
+        """Assume Role を取得する.
 
-    return session
+        Args:
+            aws_role_arn (str):
+                Role Arn. Defaults to "arn:aws:iam::XXXXX:role/role_name". 
+            aws_role_session_name (str):
+                Role Session Name. Defaults to "test".
+            aws_region_name (str):
+                Region Name. Defaults to "ap-northeast-1".
+        """
+
+        # NOTE: 以下と同義.
+        # $ aws sts assume-role --role-arn roleArn --role-session-name roleSessionName
+        _response = boto3.client("sts").assume_role(
+            RoleArn = aws_role_arn,
+            RoleSessionName = aws_role_session_name
+        )
+
+        # NOTE: 以下と同義.
+        # $ export AWS_ACCESS_KEY_ID="XXXXX"; export AWS_SECRET_ACCESS_KEY="XXXXX"; export AWS_SESSION_TOKEN="XXXXX"
+        self._session = Session(
+            aws_access_key_id = _response["Credentials"]["AccessKeyId"],
+            aws_secret_access_key = _response["Credentials"]["SecretAccessKey"],
+            aws_session_token = _response["Credentials"]["SessionToken"],
+            region_name = aws_region_name
+        )
+        # print("Account ID: {0}".format(self._session.client("sts").get_caller_identity()["Account"]))
+        print("Completed")
+    
+    def upload_s3(
+        self,
+        bucket_name: str = "bucket_name",
+        bucket_dir: str = "bucket_dir/",
+        file_name: str = "./output/example.jpg"
+    ) -> None:
+        """S3 にファイルをアップロードする.
+
+        Args:
+            bucket_name (str):
+                アップロードする S3 のバケット名. Defaults to "bucket_name".
+            bucket_dir (str):
+                アップロードする S3 のフォルダ名. "dirName/" のように "/" は後ろに配置する. Defaults to "bucket_dir/".
+            file_name (str):
+                アップロードするファイル名. "/dir/filename" の形式で渡すことが可能である. Defaults to "./output/example.jpg".
+        """
+
+        # NOTE: upload_file(対象ファイルのパス, S3のアップロード先) のため, file_name から basename のみを抽出する.
+        _file_name = Path(file_name).name
+        _bucket = self._session.resource("s3").Bucket(bucket_name)
+
+        _bucket.upload_file(file_name, bucket_dir + _file_name)
+        print(
+            "Completed upload: {0} to s3://{1}/{2}{3}".format(file_name, bucket_name, bucket_dir, _file_name)
+        )
 
 
 if __name__ == "__main__":
-    session = get_assume_role(
-        roleArn="ttttt",
-        roleSessionName="ttttt"
+    instance = S3(
+        aws_region_name = "arn:aws:iam::XXXXX:role/role_name",
+        aws_role_session_name = "test"
     )
 
-    upload_s3(
-        session=session,
-        fileName="./output/example.png"
+    instance.upload_s3(
+        file_name="./output/example.jpg"
     )
