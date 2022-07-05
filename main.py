@@ -54,11 +54,12 @@ def main():
     """ main function """
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("--img-name", help="Image Name",
+    parser.add_argument("--img-name",
+                        help="Image Name. Please enter the file extension. (default: 'example.png')",
                         default="example.png", type=str, required=False)
-    parser.add_argument("--start", help="Start time.",
+    parser.add_argument("--start", help="Start time. (default: '19:00)",
                         default="19:00", type=str, required=False)
-    parser.add_argument("--end", help="Stop time.",
+    parser.add_argument("--end", help="Stop time. (default: '21:00')",
                         default="21:00", type=str, required=False)
     args = parser.parse_args()
 
