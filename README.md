@@ -4,7 +4,7 @@
 
 ## Usage: Python 環境
 
-```shell
+```sh
 $ python main.py [OPTIONS]
 ```
 
@@ -12,12 +12,20 @@ $ python main.py [OPTIONS]
 
 ## Usage: Docker Compose 環境
 
-```shell
-$ sh start.sh [OPTIONS]
+```sh
+$ docker-compose up -d
+$ docker-compose exec generate python main.py [OPTIONS]
 ```
 
 ## Options
 
-- `img-name`：保存する画像名．`XXX.png`のようにファイル形式まで設定すること．
-- `start`： 開始時刻．**HH:MM**形式．
-- `end`： 終了時刻．**HH:MM**形式．
+```sh
+options:
+  -h, --help            show this help message and exit
+  -i IMG_NAME, --img-name IMG_NAME
+                        Image Name. Please enter the file extension. (default: 'example.jpg')
+  --start START         Start time. (default: '19:00')
+  --end END             Stop time. (default: '21:00')
+  -n ROLE_SESSION_NAME, --role-session-name ROLE_SESSION_NAME
+                        AWS Role Session Name.
+```
