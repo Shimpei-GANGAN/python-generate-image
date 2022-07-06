@@ -70,14 +70,3 @@ class S3:
         print(
             "Completed upload: {0} to s3://{1}/{2}{3}".format(file_name, bucket_name, bucket_dir, _file_name)
         )
-
-
-if __name__ == "__main__":
-    instance = S3(
-        aws_region_name = "arn:aws:iam::XXXXX:role/role_name",
-        aws_role_session_name = "test"
-    )
-
-    instance.upload_s3(
-        file_name="./output/example.jpg"
-    )
