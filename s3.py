@@ -45,7 +45,7 @@ class S3:
         # print("Account ID: {0}".format(self._session.client("sts").get_caller_identity()["Account"]))
         print("Completed")
     
-    def upload_s3(
+    def __call__(
         self,
         bucket_name: str = "bucket_name",
         bucket_dir: str = "bucket_dir/",
