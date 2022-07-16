@@ -1,7 +1,8 @@
 import argparse
 
-from generate_image import generate_image, save_image
+from generate_image import GenerateImage
 from s3 import S3
+
 
 def main():
     """ main function """
@@ -18,11 +19,15 @@ def main():
                         type=str, required=True)
     args = parser.parse_args()
 
-    _file_path = "./output/"
+    _file_path = "./output/" + args.img_name
 
     # テスト画像を生成し保存する
-    img = generate_image(start = args.start, end = args.end)
-    save_image(img, file_path=_file_path, file_name=args.img_name)
+    generate_img = GenerateImage(
+        start = args.start,
+        end = args.end,
+        file_path = _file_path
+    )
+    generate_img()
 
     # インスタンス生成
     upload_s3 = S3(
@@ -33,7 +38,7 @@ def main():
     upload_s3(
         bucket_name="testBucket",
         bucket_dir="bucketDir/",
-        file_name = _file_path + args.img_name
+        file_name = _file_path
     )
 
 
