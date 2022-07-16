@@ -25,12 +25,12 @@ def main():
     save_image(img, file_path=_file_path, file_name=args.img_name)
 
     # インスタンス生成
-    s3 = S3(
+    upload_s3 = S3(
         aws_role_arn="arn:aws:iam::XXXXX:role/role_name",
         aws_role_session_name=args.role_session_name
     )
-    # S3に画像をアップロードする
-    s3(
+    # # S3に画像をアップロードする
+    upload_s3(
         bucket_name="testBucket",
         bucket_dir="bucketDir/",
         file_name = _file_path + args.img_name
