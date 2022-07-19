@@ -9,5 +9,5 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
   PYTHONUTF8=1
 
 WORKDIR /app
-COPY . ./app
-RUN pip install Pillow boto3
+COPY . ./
+RUN pip install Pillow boto3 pytest
